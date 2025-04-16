@@ -88,5 +88,158 @@
   "zone": {
     "headerTip": "Double click to edit header",
     "footerTip": "Double click to edit footer"
+  },
+  "dialog": {
+    "ai": {
+      "outline": {
+        "title": "AI Outline Generator",
+        "topic": "Document Topic",
+        "topicPlaceholder": "Please describe your document topic",
+        "criteria": "Requirements/Instructions",
+        "criteriaPlaceholder": "Paste assignment requirements, grading criteria or specific needs (optional)"
+      },
+      "analysis": {
+        "title": "AI Analysis",
+        "placeholder": "Select text and click analysis type button above to analyze your content",
+        "loading": "Analyzing text...",
+        "error": "Analysis failed: ",
+        "tryAgain": "Please try again",
+        "suggestions": "Suggestions:"
+      }
+    },
+    "hyperlink": {
+      "title": "Hyperlink",
+      "text": "Text",
+      "textPlaceholder": "Please enter text",
+      "url": "Link",
+      "urlPlaceholder": "Please enter link"
+    },
+    "codeblock": {
+      "title": "Code Block",
+      "placeholder": "Please enter code"
+    },
+    "watermark": {
+      "title": "Watermark",
+      "content": "Content",
+      "contentPlaceholder": "Please enter content",
+      "color": "Color",
+      "fontSize": "Font Size",
+      "opacity": "Opacity",
+      "repeat": "Repeat",
+      "noRepeat": "No Repeat",
+      "horizontalGap": "Horizontal Gap",
+      "verticalGap": "Vertical Gap"
+    },
+    "error": {
+      "title": "Error",
+      "outlineGenerationFailed": "Outline generation failed"
+    }
+  },
+  "editor": {
+    "mode": {
+      "edit": "Edit Mode",
+      "clean": "Clean Mode",
+      "readonly": "Read Only Mode",
+      "form": "Form Mode",
+      "print": "Print Mode",
+      "design": "Design Mode"
+    },
+    "pageMode": {
+      "paging": "Paging",
+      "continuity": "Continuity"
+    },
+    "controls": {
+      "text": {
+        "title": "Text Control",
+        "placeholder": "Placeholder",
+        "placeholderText": "Please enter placeholder",
+        "defaultValue": "Default Value",
+        "defaultValuePlaceholder": "Please enter default value"
+      },
+      "select": {
+        "title": "Select Control",
+        "placeholder": "Placeholder",
+        "placeholderText": "Please enter placeholder",
+        "defaultValue": "Default Value",
+        "valueSets": "Value Sets",
+        "valueSetsPlaceholder": "Please enter value sets JSON, e.g.:\n[{\n\"value\":\"Yes\",\n\"code\":\"98175\"\n}]"
+      },
+      "checkbox": {
+        "title": "Checkbox Control",
+        "defaultValue": "Default Value",
+        "defaultValuePlaceholder": "Please enter default value, separate multiple values with commas",
+        "valueSets": "Value Sets",
+        "valueSetsPlaceholder": "Please enter value sets JSON, e.g.:\n[{\n\"value\":\"Yes\",\n\"code\":\"98175\"\n}]"
+      },
+      "radio": {
+        "title": "Radio Control",
+        "defaultValue": "Default Value",
+        "defaultValuePlaceholder": "Please enter default value",
+        "valueSets": "Value Sets",
+        "valueSetsPlaceholder": "Please enter value sets JSON, e.g.:\n[{\n\"value\":\"Yes\",\n\"code\":\"98175\"\n}]"
+      },
+      "date": {
+        "title": "Date Control",
+        "placeholder": "Placeholder",
+        "placeholderText": "Please enter placeholder",
+        "defaultValue": "Default Value",
+        "defaultValuePlaceholder": "Please enter default value",
+        "dateFormat": "Date Format"
+      },
+      "number": {
+        "title": "Number Control",
+        "placeholder": "Placeholder",
+        "placeholderText": "Please enter placeholder",
+        "defaultValue": "Default Value",
+        "defaultValuePlaceholder": "Please enter default value"
+      }
+    },
+    "block": {
+      "title": "Content Block",
+      "type": "Type",
+      "website": "Website",
+      "video": "Video",
+      "width": "Width",
+      "widthPlaceholder": "Please enter width (default page width)",
+      "height": "Height",
+      "heightPlaceholder": "Please enter height",
+      "address": "Address",
+      "addressPlaceholder": "Please enter address",
+      "html": "HTML",
+      "htmlPlaceholder": "Please enter HTML code (only valid for website type)"
+    },
+    "latex": {
+      "title": "LaTeX",
+      "placeholder": "Please enter LaTeX text"
+    },
+    "comment": {
+      "title": "Comment",
+      "placeholder": "Please enter comment",
+      "comments": "Comments",
+      "expandAll": "Expand All",
+      "collapseAll": "Collapse All"
+    },
+    "signature": {
+      "title": "Signature"
+    },
+    "options": {
+      "title": "Editor Configuration"
+    },
+    "margin": {
+      "title": "Page Margin",
+      "top": "Top Margin",
+      "topPlaceholder": "Please enter top margin",
+      "bottom": "Bottom Margin",
+      "bottomPlaceholder": "Please enter bottom margin",
+      "left": "Left Margin",
+      "leftPlaceholder": "Please enter left margin",
+      "right": "Right Margin",
+      "rightPlaceholder": "Please enter right margin"
+    },
+    "footer": {
+      "visiblePage": "Visible Page: ",
+      "page": "Page: ",
+      "wordCount": "Word Count: "
+    }
   }
 }

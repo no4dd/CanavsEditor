@@ -79,6 +79,165 @@ window.onload = function () {
     }
   )
 
+  // AI Outline Generator
+  const aiOutlineDom = document.querySelector<HTMLDivElement>('.menu-item__ai-outline')!
+  aiOutlineDom.onclick = function() {
+    new Dialog({
+      title: 'AI Outline Generator',
+      data: [
+        {
+          type: 'text',
+          label: 'Document Topic',
+          name: 'topic',
+          required: true,
+          placeholder: 'Please describe your document topic'
+        },
+        {
+          type: 'textarea',
+          label: 'Requirements/Instructions',
+          name: 'criteria',
+          height: 150,
+          placeholder: 'Paste assignment requirements, grading criteria or specific needs (optional)'
+        }
+      ],
+      onConfirm: async (payload) => {
+        const topic = payload.find(p => p.name === 'topic')?.value
+        const criteria = payload.find(p => p.name === 'criteria')?.value
+        
+        if (!topic) return
+        
+        try {
+          // 显示加载状态
+          instance.command.executeUpdateOptions({ readOnly: true })
+          
+          // 模拟API调用延迟
+          await new Promise(resolve => setTimeout(resolve, 2000))
+          
+          // 模拟返回结果
+          const outline = [
+            {
+              level: 1,
+              title: `引言：${topic}`,
+              description: '提供背景信息和上下文。'
+            },
+            {
+              level: 2,
+              title: '关键概念',
+              description: '定义主要思想和理论。'
+            },
+            {
+              level: 2,
+              title: '文献综述',
+              description: '分析现有研究和出版物。'
+            },
+            {
+              level: 1,
+              title: '方法论',
+              description: '解释您的方法和方法。'
+            },
+            {
+              level: 2,
+              title: '数据收集',
+              description: '详细说明如何收集信息。'
+            },
+            {
+              level: 2,
+              title: '分析技术',
+              description: '描述分析中使用的方法。'
+            },
+            {
+              level: 1,
+              title: '结果',
+              description: '清晰地呈现您的发现。'
+            },
+            {
+              level: 1,
+              title: '讨论',
+              description: '解释结果及其含义。'
+            },
+            {
+              level: 1,
+              title: '结论',
+              description: '总结要点并提出未来方向。'
+            },
+            {
+              level: 1,
+              title: '参考文献',
+              description: '列出所有引用的来源。'
+            }
+          ]
+          
+          // 清空文档（如果是新文档）
+          if (instance.command.getWordCount() === 0) {
+            instance.command.executeSelectAll()
+            instance.command.executeDelete()
+          }
+          
+          // 插入每个标题
+          for (const item of outline) {
+            // 根据级别设置标题级别
+            let titleLevel = null
+            switch (item.level) {
+              case 1: titleLevel = TitleLevel.FIRST; break
+              case 2: titleLevel = TitleLevel.SECOND; break
+              case 3: titleLevel = TitleLevel.THIRD; break
+              case 4: titleLevel = TitleLevel.FOURTH; break
+              case 5: titleLevel = TitleLevel.FIFTH; break
+              case 6: titleLevel = TitleLevel.SIXTH; break
+            }
+            
+            // 插入标题
+            instance.command.executeTitle(titleLevel)
+            instance.command.executeInsertElementList([{
+              value: item.title
+            }])
+            instance.command.executeEnter()
+            
+            // 如果有描述，插入描述
+            if (item.description) {
+              instance.command.executeInsertElementList([{
+                value: item.description
+              }])
+              instance.command.executeEnter()
+            }
+          }
+        } catch (error) {
+          console.error('生成大纲失败:', error)
+          // Display error message
+          new Dialog({
+            title: 'Error',
+            data: [
+              {
+                type: 'text',
+                label: 'Outline generation failed',
+                name: 'error',
+                value: error.message || 'Please try again'
+              }
+            ],
+            onConfirm: () => {}
+          })
+        } finally {
+          // 恢复编辑模式
+          instance.command.executeUpdateOptions({ readOnly: false })
+        }
+      }
+    })
+  }
+  
+  // AI Analysis
+  const aiAnalysisDom = document.querySelector<HTMLDivElement>('.menu-item__ai-analysis')!
+  aiAnalysisDom.onclick = function() {
+    console.log("AI Analysis toolbar button clicked");
+    switchAIAnalysis();
+  }
+  
+  // Comments
+  const commentsDom = document.querySelector<HTMLDivElement>('.menu-item__comments')!
+  commentsDom.onclick = function() {
+    console.log("Comments toolbar button clicked");
+    switchComment();
+  }
+
   // 2. | 撤销 | 重做 | 格式刷 | 清除格式 |
   const undoDom = document.querySelector<HTMLDivElement>('.menu-item__undo')!
   undoDom.title = `撤销(${isApple ? '⌘' : 'Ctrl'}+Z)`
@@ -1322,56 +1481,336 @@ window.onload = function () {
   catalogModeDom.onclick = switchCatalog
   catalogHeaderCloseDom.onclick = switchCatalog
   
-  // 评论面板切换
+  // Comment panel toggle
   const switchComment = () => {
+    console.log("Comment button clicked");
+    
+    // If AI Analysis is shown, hide it first
+    if (isAIAnalysisShow) {
+      isAIAnalysisShow = false;
+      aiAnalysisContainer.style.display = 'none';
+      console.log("Hiding AI Analysis panel");
+    }
+    
     isCommentShow = !isCommentShow
+    console.log("Comment panel should be visible:", isCommentShow);
+    
     if (isCommentShow) {
-      commentDom.style.display = 'block'
-      updateComment()
+      // Initialize header if needed
+      if (!commentDom.querySelector('.comment-header')) {
+        initCommentHeader();
+      }
+      
+      // Show panel and ensure it's visible with explicit styles
+      commentDom.style.display = 'block';
+      console.log("Setting comment panel display to block");
+      
+      // Reset all styles to ensure visibility
+      commentDom.style.width = '300px';
+      commentDom.style.height = 'calc(100% - 90px)';
+      commentDom.style.position = 'fixed';
+      commentDom.style.right = '0';
+      commentDom.style.top = '60px';
+      commentDom.style.backgroundColor = '#ffffff';
+      commentDom.style.borderLeft = '3px solid #e99d00';
+      commentDom.style.boxShadow = '-2px 0 8px rgba(0, 0, 0, 0.15)';
+      commentDom.style.zIndex = '9999';
+      commentDom.style.opacity = '1';
+      
+      // Force layout recalculation
+      document.body.offsetHeight;
+      
+      // Update comment content
+      updateComment();
     } else {
-      commentDom.style.display = 'none'
+      commentDom.style.display = 'none';
+      console.log("Setting comment panel display to none");
     }
   }
   
-  // 创建评论切换按钮
-  function createCommentModeButton() {
-    const footerFirstDiv = document.querySelector<HTMLDivElement>('.footer > div:first-child')!
-    // 如果已经存在评论按钮，则不重复创建
-    if (footerFirstDiv.querySelector('.comment-mode')) return
+  // AI Analysis panel state and toggle
+  let isAIAnalysisShow = false
+  const aiAnalysisContainer = document.querySelector<HTMLDivElement>('.ai-analysis-container')!
+  
+  // AI Analysis panel toggle
+  const switchAIAnalysis = () => {
+    console.log("AI Analysis button clicked");
     
-    // 在目录按钮后创建评论按钮
-    const commentModeDom = document.createElement('div')
-    commentModeDom.classList.add('comment-mode')
-    commentModeDom.setAttribute('title', '评论面板')
+    // If Comment panel is shown, hide it first
+    if (isCommentShow) {
+      isCommentShow = false;
+      commentDom.style.display = 'none';
+      console.log("Hiding Comment panel");
+    }
     
-    const commentModeIcon = document.createElement('i')
-    commentModeDom.append(commentModeIcon)
+    isAIAnalysisShow = !isAIAnalysisShow
+    console.log("Panel should be visible:", isAIAnalysisShow);
     
+    if (isAIAnalysisShow) {
+      // Force panel initialization
+      if (!aiAnalysisContainer.querySelector('.ai-analysis-panel')) {
+        initAIAnalysisPanel();
+      }
+      
+      // Show panel and ensure it's visible with explicit styles
+      aiAnalysisContainer.style.display = 'block';
+      console.log("Setting panel display to block");
+      
+      // Reset all styles to ensure visibility
+      aiAnalysisContainer.style.width = '300px';
+      aiAnalysisContainer.style.height = 'calc(100% - 90px)';
+      aiAnalysisContainer.style.position = 'fixed';
+      aiAnalysisContainer.style.right = '0';
+      aiAnalysisContainer.style.top = '60px';
+      aiAnalysisContainer.style.backgroundColor = '#ffffff';
+      aiAnalysisContainer.style.borderLeft = '3px solid #4991f2';
+      aiAnalysisContainer.style.boxShadow = '-2px 0 8px rgba(0, 0, 0, 0.15)';
+      aiAnalysisContainer.style.zIndex = '9999';
+      aiAnalysisContainer.style.opacity = '1';
+      
+      // Force layout recalculation
+      document.body.offsetHeight;
+    } else {
+      aiAnalysisContainer.style.display = 'none';
+      console.log("Setting panel display to none");
+    }
+  }
+  
+  // Initialize AI Analysis panel
+  function initAIAnalysisPanel() {
+    // First, let's add our panel's CSS directly to the document
+    const style = document.createElement('style');
+    style.textContent = `
+      .ai-analysis-panel {
+        width: 300px;
+        background-color: #fff;
+        border: 1px solid #e0e0e0;
+        border-radius: 4px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+        font-size: 14px;
+        overflow: hidden;
+      }
+      .ai-analysis-panel__header {
+        display: flex;
+        align-items: center;
+        padding: 10px 12px;
+        background-color: #f5f5f5;
+        border-bottom: 1px solid #e0e0e0;
+        position: relative;
+      }
+      .ai-analysis-panel__title {
+        font-weight: 600;
+        flex: 1;
+      }
+      .ai-analysis-panel__close {
+        width: 16px;
+        height: 16px;
+        cursor: pointer;
+        margin-left: 8px;
+        position: relative;
+      }
+      .ai-analysis-panel__close:before,
+      .ai-analysis-panel__close:after {
+        content: '';
+        position: absolute;
+        width: 16px;
+        height: 2px;
+        background-color: #666;
+        top: 50%;
+        left: 0;
+      }
+      .ai-analysis-panel__close:before {
+        transform: rotate(45deg);
+      }
+      .ai-analysis-panel__close:after {
+        transform: rotate(-45deg);
+      }
+      .ai-analysis-panel__close:hover:before,
+      .ai-analysis-panel__close:hover:after {
+        background-color: #333;
+      }
+      .ai-analysis-panel__controls {
+        display: flex;
+        padding: 8px 12px;
+        border-bottom: 1px solid #e0e0e0;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+      .ai-analysis-panel__analyze-btn {
+        background-color: #f5f5f5;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        padding: 4px 8px;
+        cursor: pointer;
+        font-size: 12px;
+      }
+      .ai-analysis-panel__analyze-btn:hover {
+        background-color: #e9e9e9;
+      }
+      .ai-analysis-panel__content {
+        padding: 12px;
+        max-height: calc(100vh - 150px);
+        overflow-y: auto;
+      }
+      .ai-analysis-panel__placeholder {
+        color: #888;
+        font-style: italic;
+        text-align: center;
+        padding: 20px 0;
+      }
+      .ai-analysis-panel__loading {
+        text-align: center;
+        padding: 20px 0;
+        color: #666;
+        font-style: italic;
+      }
+      .ai-analysis-panel__analysis {
+        margin-bottom: 12px;
+        line-height: 1.5;
+      }
+      .ai-analysis-panel__suggestions {
+        border-top: 1px solid #eee;
+        padding-top: 12px;
+      }
+      .ai-analysis-panel__suggestions h4 {
+        margin: 0 0 8px 0;
+        font-size: 14px;
+        font-weight: 600;
+      }
+      .ai-analysis-panel__suggestions ul {
+        margin: 0;
+        padding-left: 24px;
+      }
+      .ai-analysis-panel__suggestions li {
+        margin-bottom: 6px;
+      }
+      .ai-analysis-panel__error {
+        color: #e53935;
+        padding: 8px;
+        border: 1px solid #ffcdd2;
+        border-radius: 4px;
+        background-color: #ffebee;
+      }
+    `;
+    document.head.appendChild(style);
+    
+    // Now add the panel HTML
+    aiAnalysisContainer.innerHTML = `
+      <div class="ai-analysis-panel">
+        <div class="ai-analysis-panel__header">
+          <div class="ai-analysis-panel__title">AI Analysis</div>
+          <div class="ai-analysis-panel__close"></div>
+        </div>
+        <div class="ai-analysis-panel__controls">
+          <button class="ai-analysis-panel__analyze-btn" data-type="summary">Summary</button>
+          <button class="ai-analysis-panel__analyze-btn" data-type="feedback">Feedback</button>
+          <button class="ai-analysis-panel__analyze-btn" data-type="grammar">Grammar</button>
+          <button class="ai-analysis-panel__analyze-btn" data-type="style">Style</button>
+        </div>
+        <div class="ai-analysis-panel__content">
+          <div class="ai-analysis-panel__placeholder">
+            Select text and click analysis type button above to analyze your content
+          </div>
+          <div class="ai-analysis-panel__result" style="display: none;">
+            <div class="ai-analysis-panel__loading" style="display: none;">
+              Analyzing text...
+            </div>
+            <div class="ai-analysis-panel__analysis"></div>
+            <div class="ai-analysis-panel__suggestions"></div>
+          </div>
+        </div>
+      </div>
+    `
+    
+    // Add event listeners
+    const closeBtn = aiAnalysisContainer.querySelector<HTMLElement>('.ai-analysis-panel__close')!
+    closeBtn.onclick = switchAIAnalysis
+    
+    // Analysis button click events
+    const analyzeButtons = aiAnalysisContainer.querySelectorAll<HTMLButtonElement>('.ai-analysis-panel__analyze-btn')
+    analyzeButtons.forEach(button => {
+      button.onclick = async () => {
+        console.log("Analysis button clicked:", button.dataset.type);
+        
+        const analysisType = button.dataset.type
+        const placeholder = aiAnalysisContainer.querySelector<HTMLDivElement>('.ai-analysis-panel__placeholder')!
+        const resultContainer = aiAnalysisContainer.querySelector<HTMLDivElement>('.ai-analysis-panel__result')!
+        const loadingEl = aiAnalysisContainer.querySelector<HTMLDivElement>('.ai-analysis-panel__loading')!
+        const analysisEl = aiAnalysisContainer.querySelector<HTMLDivElement>('.ai-analysis-panel__analysis')!
+        const suggestionsEl = aiAnalysisContainer.querySelector<HTMLDivElement>('.ai-analysis-panel__suggestions')!
+        
+        // Show loading state
+        placeholder.style.display = 'none'
+        resultContainer.style.display = 'block'
+        loadingEl.style.display = 'block'
+        analysisEl.innerHTML = '';
+        suggestionsEl.innerHTML = '';
+        
+        try {
+          // Mock API delay
+          await new Promise(resolve => setTimeout(resolve, 1000))
+          
+          // Mock results based on analysis type
+          let analysis = ''
+          let suggestions: string[] = []
+          
+          switch (analysisType) {
+            case 'summary':
+              analysis = 'This is a summary analysis of the document. The main content includes a medical record with patient information, symptoms, and treatment plans.'
+              suggestions = ['Add more specific details about the diagnosis', 'Include a clearer conclusion section']
+              break
+            case 'feedback':
+              analysis = 'The document structure is clear and follows standard medical record format. Information is organized logically in sections.'
+              suggestions = ['Consider adding more context about patient history', 'The treatment plan could be more detailed']
+              break
+            case 'grammar':
+              analysis = 'The text has good grammatical structure overall. There are a few minor issues that could be improved.'
+              suggestions = ['Check sentence structure in the third paragraph', 'Review punctuation in the diagnosis section']
+              break
+            case 'style':
+              analysis = 'The writing style is formal and appropriate for a medical document. Terminology is used consistently.'
+              suggestions = ['Some sentences are too technical for patient understanding', 'Consider using more concise phrasing in the treatment section']
+              break
+          }
+          
+          // Update UI with results
+          loadingEl.style.display = 'none'
+          analysisEl.innerHTML = analysis
+          
+          if (suggestions && suggestions.length) {
+            let suggestionsHtml = '<h4>Suggestions:</h4><ul>'
+            suggestions.forEach(suggestion => {
+              suggestionsHtml += `<li>${suggestion}</li>`
+            })
+            suggestionsHtml += '</ul>'
+            suggestionsEl.innerHTML = suggestionsHtml
+          }
+        } catch (error) {
+          // Display error
+          console.error("Analysis error:", error);
+          loadingEl.style.display = 'none'
+          analysisEl.innerHTML = `<div class="ai-analysis-panel__error">Analysis failed: ${error.message || 'Please try again'}</div>`
+        }
+      }
+    })
+  }
+  
+  // Attach click handlers to existing footer buttons
+  
+  // Get comment toggle button in footer
+  const commentModeDom = document.querySelector<HTMLDivElement>('.footer .comment-mode')!
+  if (commentModeDom) {
     commentModeDom.onclick = switchComment
-    
-    // 将按钮添加到目录按钮后
-    const catalogModeNode = footerFirstDiv.querySelector('.catalog-mode')
-    if (catalogModeNode) {
-      catalogModeNode.after(commentModeDom)
-    } else {
-      footerFirstDiv.prepend(commentModeDom)
-    }
+    console.log("Comment button click handler attached")
   }
   
-  // 初始化评论面板关闭按钮
-  function initCommentCloseButton() {
-    if (commentDom.querySelector('.comment-header') && 
-        !commentDom.querySelector('.comment-header__close')) {
-      const commentHeader = commentDom.querySelector<HTMLDivElement>('.comment-header')!
-      const closeBtn = document.createElement('i')
-      closeBtn.classList.add('comment-header__close')
-      closeBtn.onclick = switchComment
-      commentHeader.append(closeBtn)
-    }
+  // Get AI Analysis toggle button in footer
+  const aiAnalysisModeDom = document.querySelector<HTMLDivElement>('.footer .ai-analysis-mode')!
+  if (aiAnalysisModeDom) {
+    aiAnalysisModeDom.onclick = switchAIAnalysis
+    console.log("AI Analysis button click handler attached")
   }
-  
-  // 创建评论模式切换按钮
-  createCommentModeButton()
 
   const pageModeDom = document.querySelector<HTMLDivElement>('.page-mode')!
   const pageModeOptionsDom =
@@ -1527,38 +1966,38 @@ window.onload = function () {
   const modeList = [
     {
       mode: EditorMode.EDIT,
-      name: '编辑模式'
+      name: 'Edit Mode'
     },
     {
       mode: EditorMode.CLEAN,
-      name: '清洁模式'
+      name: 'Clean Mode'
     },
     {
       mode: EditorMode.READONLY,
-      name: '只读模式'
+      name: 'Read Only Mode'
     },
     {
       mode: EditorMode.FORM,
-      name: '表单模式'
+      name: 'Form Mode'
     },
     {
       mode: EditorMode.PRINT,
-      name: '打印模式'
+      name: 'Print Mode'
     },
     {
       mode: EditorMode.DESIGN,
-      name: '设计模式'
+      name: 'Design Mode'
     }
   ]
   const modeElement = document.querySelector<HTMLDivElement>('.editor-mode')!
   modeElement.onclick = function () {
-    // 模式选择循环
+    // Mode selection cycle
     modeIndex === modeList.length - 1 ? (modeIndex = 0) : modeIndex++
-    // 设置模式
+    // Set mode
     const { name, mode } = modeList[modeIndex]
     modeElement.innerText = name
     instance.command.executeMode(mode)
-    // 设置菜单栏权限视觉反馈
+    // Set menu bar permission visual feedback
     const isReadonly = mode === EditorMode.READONLY
     const enableMenuList = ['search', 'print']
     document.querySelectorAll<HTMLDivElement>('.menu-item>div').forEach(dom => {
@@ -1571,12 +2010,12 @@ window.onload = function () {
 
   // 模拟批注
   const commentDom = document.querySelector<HTMLDivElement>('.comment')!
-  // 跟踪已最小化的评论
+  // Track minimized comments
   const minimizedComments = new Set<string>()
-  // 控制评论面板显示状态
-  let isCommentShow = true
+  // Control comment panel display state
+  let isCommentShow = false
   
-  // 初始化评论头部
+  // Initialize comment header
   function initCommentHeader() {
     if (!commentDom.querySelector('.comment-header')) {
       const commentHeader = document.createElement('div')
@@ -1584,14 +2023,22 @@ window.onload = function () {
       
       const commentHeaderTitle = document.createElement('div')
       commentHeaderTitle.classList.add('comment-header__title')
-      commentHeaderTitle.innerText = '评论'
+      commentHeaderTitle.innerText = 'Comments'
       commentHeader.append(commentHeaderTitle)
       
+      const commentClose = document.createElement('div')
+      commentClose.classList.add('comment-header__close')
+      commentClose.onclick = switchComment
+      commentHeader.append(commentClose)
+      
+      commentDom.prepend(commentHeader)
+      
+      // Add controls section below header
       const commentHeaderControls = document.createElement('div')
       commentHeaderControls.classList.add('comment-header__controls')
       
       const expandAllBtn = document.createElement('button')
-      expandAllBtn.innerText = '展开全部'
+      expandAllBtn.innerText = 'Expand All'
       expandAllBtn.onclick = () => {
         minimizedComments.clear()
         commentDom.querySelectorAll<HTMLDivElement>('.comment-item').forEach(item => {
@@ -1600,7 +2047,7 @@ window.onload = function () {
       }
       
       const collapseAllBtn = document.createElement('button')
-      collapseAllBtn.innerText = '收起全部'
+      collapseAllBtn.innerText = 'Collapse All'
       collapseAllBtn.onclick = () => {
         commentDom.querySelectorAll<HTMLDivElement>('.comment-item').forEach(item => {
           item.classList.add('minimized')
@@ -1610,12 +2057,7 @@ window.onload = function () {
       
       commentHeaderControls.append(expandAllBtn)
       commentHeaderControls.append(collapseAllBtn)
-      commentHeader.append(commentHeaderControls)
-      
-      commentDom.prepend(commentHeader)
-      
-      // 添加关闭按钮
-      initCommentCloseButton()
+      commentDom.append(commentHeaderControls)
     }
   }
   
@@ -1726,6 +2168,12 @@ window.onload = function () {
       }
     }
   }
+  // Initialize the AI Analysis panel when the page loads
+  initAIAnalysisPanel();
+  
+  // Initialize the comment panel when the page loads
+  initCommentHeader();
+  
   // 8. 内部事件监听
   instance.listener.rangeStyleChange = function (payload) {
     // 控件类型

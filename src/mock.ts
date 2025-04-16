@@ -7,20 +7,20 @@ import {
   TitleLevel
 } from './editor'
 
-const text = `主诉：\n发热三天，咳嗽五天。\n现病史：\n患者于三天前无明显诱因，感冒后发现面部水肿，无皮疹，尿量减少，出现乏力，在外治疗无好转，现来我院就诊。\n既往史：\n有糖尿病10年，有高血压2年，有传染性疾病1年。报告其他既往疾病。\n流行病史：\n否认14天内接触过确诊患者、疑似患者、无症状感染者及其密切接触者；否认14天内去过以下场所：水产、肉类批发市场，农贸市场，集市，大型超市，夜市；否认14天内与以下场所工作人员密切接触：水产、肉类批发市场，农贸市场，集市，大型超市；否认14天内周围（如家庭、办公室）有2例以上聚集性发病；否认14天内接触过有发热或呼吸道症状的人员；否认14天内自身有发热或呼吸道症状；否认14天内接触过纳入隔离观察的人员及其他可能与新冠肺炎关联的情形；陪同家属无以上情况。\n体格检查：\nT：39.5℃，P：80bpm，R：20次/分，BP：120/80mmHg；\n辅助检查：\n2020年6月10日，普放：血细胞比容36.50%（偏低）40～50；单核细胞绝对值0.75*10/L（偏高）参考值：0.1～0.6；\n门诊诊断：处置治疗：电子签名：【】\n其他记录：`
+const text = `Chief Complaint:\nFever for three days, cough for five days.\nPresent Illness:\nThree days ago, the patient developed facial edema without obvious cause after a cold, no rash, decreased urine output, fatigue, no improvement with external treatment, and now comes to our hospital for treatment.\nPast Medical History:\nDiabetes for 10 years, hypertension for 2 years, infectious disease for 1 year. Reporting other previous diseases.\nEpidemiological History:\nDenies contact with confirmed cases, suspected cases, asymptomatic infected persons and their close contacts within 14 days; Denies going to the following places within 14 days: aquatic products, wholesale meat markets, farmers markets, fairs, large supermarkets, night markets; Denies close contact with staff from the following places within 14 days: aquatic products, wholesale meat markets, farmers markets, fairs, large supermarkets; Denies clustered cases of 2 or more cases in surrounding areas (such as families, offices) within 14 days; Denies contact with people with fever or respiratory symptoms within 14 days; Denies having fever or respiratory symptoms within 14 days; Denies contact with people under quarantine observation and other situations that may be associated with COVID-19 within 14 days; Accompanying family members have none of the above conditions.\nPhysical Examination:\nT: 39.5°C, P: 80bpm, R: 20 breaths/min, BP: 120/80mmHg;\nAuxiliary Examination:\nJune 10, 2020, Radiology: Hematocrit 36.50% (low) reference range: 40-50; Absolute monocyte count 0.75*10/L (high) reference range: 0.1-0.6;\nOutpatient Diagnosis:Treatment Plan:Electronic Signature:【】\nOther Records:`
 
-// 模拟标题
+// Mock titles
 const titleText = [
-  '主诉：',
-  '现病史：',
-  '既往史：',
-  '流行病史：',
-  '体格检查：',
-  '辅助检查：',
-  '门诊诊断：',
-  '处置治疗：',
-  '电子签名：',
-  '其他记录：'
+  'Chief Complaint:',
+  'Present Illness:',
+  'Past Medical History:',
+  'Epidemiological History:',
+  'Physical Examination:',
+  'Auxiliary Examination:',
+  'Outpatient Diagnosis:',
+  'Treatment Plan:',
+  'Electronic Signature:',
+  'Other Records:'
 ]
 const titleMap: Map<number, string> = new Map()
 for (let t = 0; t < titleText.length; t++) {
@@ -31,8 +31,8 @@ for (let t = 0; t < titleText.length; t++) {
   }
 }
 
-// 模拟颜色字
-const colorText = ['传染性疾病']
+// Mock colored text
+const colorText = ['infectious disease']
 const colorIndex: number[] = colorText
   .map(b => {
     const i = text.indexOf(b)
@@ -44,8 +44,8 @@ const colorIndex: number[] = colorText
   })
   .flat()
 
-// 模拟高亮字
-const highlightText = ['血细胞比容']
+// Mock highlighted text
+const highlightText = ['Hematocrit']
 const highlightIndex: number[] = highlightText
   .map(b => {
     const i = text.indexOf(b)
@@ -106,13 +106,13 @@ elementList.splice(12, 0, {
     conceptId: '1',
     type: ControlType.TEXT,
     value: null,
-    placeholder: '其他补充',
+    placeholder: 'Additional information',
     prefix: '{',
     postfix: '}'
   }
 })
 
-// 模拟下拉控件
+// Mock dropdown control
 elementList.splice(94, 0, {
   type: ElementType.CONTROL,
   value: '',
@@ -121,20 +121,20 @@ elementList.splice(94, 0, {
     type: ControlType.SELECT,
     value: null,
     code: null,
-    placeholder: '有无',
+    placeholder: 'Yes/No',
     prefix: '{',
     postfix: '}',
     valueSets: [
       {
-        value: '有',
+        value: 'Yes',
         code: '98175'
       },
       {
-        value: '无',
+        value: 'No',
         code: '98176'
       },
       {
-        value: '不详',
+        value: 'Unknown',
         code: '98177'
       }
     ]
@@ -174,8 +174,8 @@ elementList.splice(335, 0, {
     conceptId: '6',
     type: ControlType.TEXT,
     value: null,
-    placeholder: '内容',
-    preText: '其他：',
+    placeholder: 'Content',
+    preText: 'Other:',
     postText: '。'
   }
 })
@@ -200,7 +200,7 @@ elementList.splice(451, 0, {
   listType: ListType.OL,
   valueList: [
     {
-      value: '高血压\n糖尿病\n病毒性感冒\n过敏性鼻炎\n过敏性鼻息肉'
+      value: 'Hypertension\nDiabetes\nViral cold\nAllergic rhinitis\nAllergic nasal polyps'
     }
   ]
 })
@@ -348,7 +348,7 @@ elementList.push({
 elementList.push(
   ...(<IElement[]>[
     {
-      value: '是否同意以上内容：'
+      value: 'Do you agree with the above content: '
     },
     {
       type: ElementType.CONTROL,
@@ -359,11 +359,11 @@ elementList.push(
         value: '',
         valueSets: [
           {
-            value: '同意',
+            value: 'Agree',
             code: '98175'
           },
           {
-            value: '否定',
+            value: 'Disagree',
             code: '98176'
           }
         ]
@@ -380,7 +380,7 @@ elementList.push(
 elementList.push(
   ...(<IElement[]>[
     {
-      value: '医学公式：'
+      value: 'Medical formula: '
     },
     {
       value: `{E_k} = hv - {W_0}`,
@@ -396,7 +396,7 @@ elementList.push(
 elementList.push(
   ...(<IElement[]>[
     {
-      value: '签署日期：'
+      value: 'Signing date: '
     },
     {
       type: ElementType.CONTROL,
@@ -409,7 +409,7 @@ elementList.push(
             value: `2022-08-10 17:30:01`
           }
         ],
-        placeholder: '签署日期'
+        placeholder: 'Signing date'
       }
     },
     {
@@ -422,7 +422,7 @@ elementList.push(
 elementList.push(
   ...[
     {
-      value: '患者签名：'
+      value: 'Patient signature: '
     },
     {
       type: ElementType.CONTROL,
@@ -479,9 +479,9 @@ export const commentList: IComment[] = [
   {
     id: '1',
     content:
-      '红细胞比容（HCT）是指每单位容积中红细胞所占全血容积的比值，用于反映红细胞和血浆的比例。',
+      'Hematocrit (HCT) refers to the ratio of the volume of red blood cells to the total blood volume per unit volume, used to reflect the ratio of red blood cells to plasma.',
     userName: 'Hufe',
-    rangeText: '血细胞比容',
+    rangeText: 'Hematocrit',
     createdDate: '2023-08-20 23:10:55'
   }
 ]
@@ -489,17 +489,17 @@ export const commentList: IComment[] = [
 export const options: IEditorOption = {
   margins: [100, 120, 100, 120],
   watermark: {
-    data: 'CANVAS-EDITOR',
+    data: 'CANVAS-EDITOR DEMO',
     size: 120
   },
   pageNumber: {
-    format: '第{pageNo}页/共{pageCount}页'
+    format: 'Page {pageNo} of {pageCount}'
   },
   placeholder: {
-    data: '请输入正文'
+    data: 'Please enter text'
   },
   zone: {
     tipDisabled: false
   },
-  maskMargin: [60, 0, 30, 0] // 菜单栏高度60，底部工具栏30为遮盖层
+  maskMargin: [60, 0, 30, 0] // Menu bar height 60, bottom toolbar 30 for mask layer
 }

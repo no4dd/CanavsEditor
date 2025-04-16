@@ -309,6 +309,15 @@
         <div class="menu-item__block" title="内容块">
           <i></i>
         </div>
+        <div class="menu-item__ai-outline" title="AI Outline Generator">
+          <i></i>
+        </div>
+        <div class="menu-item__ai-analysis" title="AI Content Analysis">
+          <i></i>
+        </div>
+        <div class="menu-item__comments" title="Comments Panel">
+          <i></i>
+        </div>
       </div>
       <div class="menu-divider"></div>
       <div class="menu-item">
@@ -339,7 +348,7 @@
     </div>
     <div class="catalog" editor-component="catalog">
       <div class="catalog__header">
-        <span>目录</span>
+        <span>Contents</span>
         <div class="catalog__header__close">
           <i></i>
         </div>
@@ -348,35 +357,42 @@
     </div>
     <div class="editor"></div>
     <div class="comment" editor-component="comment"></div>
+    <div class="ai-analysis-container" editor-component="ai-analysis"></div>
     <div class="footer" editor-component="footer">
       <div>
-        <div class="catalog-mode" title="目录">
+        <div class="catalog-mode" title="Contents">
+          <i></i>
+        </div>
+        <div class="comment-mode" title="Comments">
+          <i></i>
+        </div>
+        <div class="ai-analysis-mode" title="AI Analysis">
           <i></i>
         </div>
         <div class="page-mode">
-          <i title="页面模式(分页、连页)"></i>
+          <i title="Page Mode (Paging, Continuity)"></i>
           <div class="options">
             <ul>
-              <li data-page-mode="paging" class="active">分页</li>
-              <li data-page-mode="continuity">连页</li>
+              <li data-page-mode="paging" class="active">Paging</li>
+              <li data-page-mode="continuity">Continuity</li>
             </ul>
           </div>
         </div>
-        <span>可见页码：<span class="page-no-list">1</span></span>
-        <span>页面：<span class="page-no">1</span>/<span class="page-size">1</span></span>
-        <span>字数：<span class="word-count">0</span></span>
+        <span>Visible Pages: <span class="page-no-list">1</span></span>
+        <span>Page: <span class="page-no">1</span>/<span class="page-size">1</span></span>
+        <span>Word Count: <span class="word-count">0</span></span>
       </div>
-      <div class="editor-mode" title="编辑模式(编辑、清洁、只读、表单、设计)">编辑模式</div>
+      <div class="editor-mode" title="Editor Mode (Edit, Clean, Read Only, Form, Design)">Edit Mode</div>
       <div>
-        <div class="page-scale-minus" title="缩小(Ctrl+-)">
+        <div class="page-scale-minus" title="Zoom Out (Ctrl+-)">
           <i></i>
         </div>
-        <span class="page-scale-percentage" title="显示比例(点击可复原Ctrl+0)">100%</span>
-        <div class="page-scale-add" title="放大(Ctrl+=)">
+        <span class="page-scale-percentage" title="Display Scale (Click to Reset Ctrl+0)">100%</span>
+        <div class="page-scale-add" title="Zoom In (Ctrl+=)">
           <i></i>
         </div>
         <div class="paper-size">
-          <i title="纸张类型"></i>
+          <i title="Paper Type"></i>
           <div class="options">
             <ul>
               <li data-paper-size="794*1123" class="active">A4</li>
@@ -393,21 +409,21 @@
           </div>
         </div>
         <div class="paper-direction">
-          <i title="纸张方向"></i>
+          <i title="Paper Orientation"></i>
           <div class="options">
             <ul>
-              <li data-paper-direction="vertical" class="active">纵向</li>
-              <li data-paper-direction="horizontal">横向</li>
+              <li data-paper-direction="vertical" class="active">Portrait</li>
+              <li data-paper-direction="horizontal">Landscape</li>
             </ul>
           </div>
         </div>
-        <div class="paper-margin" title="页边距">
+        <div class="paper-margin" title="Page Margin">
           <i></i>
         </div>
-        <div class="fullscreen" title="全屏显示">
+        <div class="fullscreen" title="Full Screen">
           <i></i>
         </div>
-        <div class="editor-option" title="编辑器设置">
+        <div class="editor-option" title="Editor Settings">
           <i></i>
         </div>
       </div>
