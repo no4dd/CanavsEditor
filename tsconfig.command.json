@@ -1,0 +1,8 @@
+{
+  "extends": "./tsconfig.json",
+  // Only type-check CommandAdapt and the Element helpers
+  "files": [
+    "src/editor/core/command/CommandAdapt.ts",
+    "src/editor/interface/Element.ts"
+  ]
+}

@@ -26,6 +26,8 @@ import { Dialog } from './components/dialog/Dialog'
 import { formatPrismToken } from './utils/prism'
 import { Signature } from './components/signature/Signature'
 import { debounce, nextTick, scrollIntoView } from './utils'
+import { citationPlugin } from './plugins/citation'   // ← path relative to main.ts
+
 
 window.onload = function () {
   const isApple =
@@ -62,6 +64,8 @@ window.onload = function () {
     },
     options
   )
+  instance.plugin.use(citationPlugin, { style: 'apa' })
+
   console.log('实例: ', instance)
   // cypress使用
   Reflect.set(window, 'editor', instance)
@@ -227,15 +231,15 @@ window.onload = function () {
   // AI Analysis
   const aiAnalysisDom = document.querySelector<HTMLDivElement>('.menu-item__ai-analysis')!
   aiAnalysisDom.onclick = function() {
-    console.log("AI Analysis toolbar button clicked");
-    switchAIAnalysis();
+    console.log('AI Analysis toolbar button clicked')
+    switchAIAnalysis()
   }
   
   // Comments
   const commentsDom = document.querySelector<HTMLDivElement>('.menu-item__comments')!
   commentsDom.onclick = function() {
-    console.log("Comments toolbar button clicked");
-    switchComment();
+    console.log('Comments toolbar button clicked')
+    switchComment()
   }
 
   // 2. | 撤销 | 重做 | 格式刷 | 清除格式 |
@@ -1483,48 +1487,48 @@ window.onload = function () {
   
   // Comment panel toggle
   const switchComment = () => {
-    console.log("Comment button clicked");
+    console.log('Comment button clicked')
     
     // If AI Analysis is shown, hide it first
     if (isAIAnalysisShow) {
-      isAIAnalysisShow = false;
-      aiAnalysisContainer.style.display = 'none';
-      console.log("Hiding AI Analysis panel");
+      isAIAnalysisShow = false
+      aiAnalysisContainer.style.display = 'none'
+      console.log('Hiding AI Analysis panel')
     }
     
     isCommentShow = !isCommentShow
-    console.log("Comment panel should be visible:", isCommentShow);
+    console.log('Comment panel should be visible:', isCommentShow)
     
     if (isCommentShow) {
       // Initialize header if needed
       if (!commentDom.querySelector('.comment-header')) {
-        initCommentHeader();
+        initCommentHeader()
       }
       
       // Show panel and ensure it's visible with explicit styles
-      commentDom.style.display = 'block';
-      console.log("Setting comment panel display to block");
+      commentDom.style.display = 'block'
+      console.log('Setting comment panel display to block')
       
       // Reset all styles to ensure visibility
-      commentDom.style.width = '300px';
-      commentDom.style.height = 'calc(100% - 90px)';
-      commentDom.style.position = 'fixed';
-      commentDom.style.right = '0';
-      commentDom.style.top = '60px';
-      commentDom.style.backgroundColor = '#ffffff';
-      commentDom.style.borderLeft = '3px solid #e99d00';
-      commentDom.style.boxShadow = '-2px 0 8px rgba(0, 0, 0, 0.15)';
-      commentDom.style.zIndex = '9999';
-      commentDom.style.opacity = '1';
+      commentDom.style.width = '300px'
+      commentDom.style.height = 'calc(100% - 90px)'
+      commentDom.style.position = 'fixed'
+      commentDom.style.right = '0'
+      commentDom.style.top = '60px'
+      commentDom.style.backgroundColor = '#ffffff'
+      commentDom.style.borderLeft = '3px solid #e99d00'
+      commentDom.style.boxShadow = '-2px 0 8px rgba(0, 0, 0, 0.15)'
+      commentDom.style.zIndex = '9999'
+      commentDom.style.opacity = '1'
       
       // Force layout recalculation
-      document.body.offsetHeight;
+      document.body.offsetHeight
       
       // Update comment content
-      updateComment();
+      updateComment()
     } else {
-      commentDom.style.display = 'none';
-      console.log("Setting comment panel display to none");
+      commentDom.style.display = 'none'
+      console.log('Setting comment panel display to none')
     }
   }
   
@@ -1534,52 +1538,52 @@ window.onload = function () {
   
   // AI Analysis panel toggle
   const switchAIAnalysis = () => {
-    console.log("AI Analysis button clicked");
+    console.log('AI Analysis button clicked')
     
     // If Comment panel is shown, hide it first
     if (isCommentShow) {
-      isCommentShow = false;
-      commentDom.style.display = 'none';
-      console.log("Hiding Comment panel");
+      isCommentShow = false
+      commentDom.style.display = 'none'
+      console.log('Hiding Comment panel')
     }
     
     isAIAnalysisShow = !isAIAnalysisShow
-    console.log("Panel should be visible:", isAIAnalysisShow);
+    console.log('Panel should be visible:', isAIAnalysisShow)
     
     if (isAIAnalysisShow) {
       // Force panel initialization
       if (!aiAnalysisContainer.querySelector('.ai-analysis-panel')) {
-        initAIAnalysisPanel();
+        initAIAnalysisPanel()
       }
       
       // Show panel and ensure it's visible with explicit styles
-      aiAnalysisContainer.style.display = 'block';
-      console.log("Setting panel display to block");
+      aiAnalysisContainer.style.display = 'block'
+      console.log('Setting panel display to block')
       
       // Reset all styles to ensure visibility
-      aiAnalysisContainer.style.width = '300px';
-      aiAnalysisContainer.style.height = 'calc(100% - 90px)';
-      aiAnalysisContainer.style.position = 'fixed';
-      aiAnalysisContainer.style.right = '0';
-      aiAnalysisContainer.style.top = '60px';
-      aiAnalysisContainer.style.backgroundColor = '#ffffff';
-      aiAnalysisContainer.style.borderLeft = '3px solid #4991f2';
-      aiAnalysisContainer.style.boxShadow = '-2px 0 8px rgba(0, 0, 0, 0.15)';
-      aiAnalysisContainer.style.zIndex = '9999';
-      aiAnalysisContainer.style.opacity = '1';
+      aiAnalysisContainer.style.width = '300px'
+      aiAnalysisContainer.style.height = 'calc(100% - 90px)'
+      aiAnalysisContainer.style.position = 'fixed'
+      aiAnalysisContainer.style.right = '0'
+      aiAnalysisContainer.style.top = '60px'
+      aiAnalysisContainer.style.backgroundColor = '#ffffff'
+      aiAnalysisContainer.style.borderLeft = '3px solid #4991f2'
+      aiAnalysisContainer.style.boxShadow = '-2px 0 8px rgba(0, 0, 0, 0.15)'
+      aiAnalysisContainer.style.zIndex = '9999'
+      aiAnalysisContainer.style.opacity = '1'
       
       // Force layout recalculation
-      document.body.offsetHeight;
+      document.body.offsetHeight
     } else {
-      aiAnalysisContainer.style.display = 'none';
-      console.log("Setting panel display to none");
+      aiAnalysisContainer.style.display = 'none'
+      console.log('Setting panel display to none')
     }
   }
   
   // Initialize AI Analysis panel
   function initAIAnalysisPanel() {
     // First, let's add our panel's CSS directly to the document
-    const style = document.createElement('style');
+    const style = document.createElement('style')
     style.textContent = `
       .ai-analysis-panel {
         width: 300px;
@@ -1692,8 +1696,8 @@ window.onload = function () {
         border-radius: 4px;
         background-color: #ffebee;
       }
-    `;
-    document.head.appendChild(style);
+    `
+    document.head.appendChild(style)
     
     // Now add the panel HTML
     aiAnalysisContainer.innerHTML = `
@@ -1731,7 +1735,7 @@ window.onload = function () {
     const analyzeButtons = aiAnalysisContainer.querySelectorAll<HTMLButtonElement>('.ai-analysis-panel__analyze-btn')
     analyzeButtons.forEach(button => {
       button.onclick = async () => {
-        console.log("Analysis button clicked:", button.dataset.type);
+        console.log('Analysis button clicked:', button.dataset.type)
         
         const analysisType = button.dataset.type
         const placeholder = aiAnalysisContainer.querySelector<HTMLDivElement>('.ai-analysis-panel__placeholder')!
@@ -1744,8 +1748,8 @@ window.onload = function () {
         placeholder.style.display = 'none'
         resultContainer.style.display = 'block'
         loadingEl.style.display = 'block'
-        analysisEl.innerHTML = '';
-        suggestionsEl.innerHTML = '';
+        analysisEl.innerHTML = ''
+        suggestionsEl.innerHTML = ''
         
         try {
           // Mock API delay
@@ -1788,7 +1792,7 @@ window.onload = function () {
           }
         } catch (error) {
           // Display error
-          console.error("Analysis error:", error);
+          console.error('Analysis error:', error)
           loadingEl.style.display = 'none'
           analysisEl.innerHTML = `<div class="ai-analysis-panel__error">Analysis failed: ${error.message || 'Please try again'}</div>`
         }
@@ -1802,14 +1806,14 @@ window.onload = function () {
   const commentModeDom = document.querySelector<HTMLDivElement>('.footer .comment-mode')!
   if (commentModeDom) {
     commentModeDom.onclick = switchComment
-    console.log("Comment button click handler attached")
+    console.log('Comment button click handler attached')
   }
   
   // Get AI Analysis toggle button in footer
   const aiAnalysisModeDom = document.querySelector<HTMLDivElement>('.footer .ai-analysis-mode')!
   if (aiAnalysisModeDom) {
     aiAnalysisModeDom.onclick = switchAIAnalysis
-    console.log("AI Analysis button click handler attached")
+    console.log('AI Analysis button click handler attached')
   }
 
   const pageModeDom = document.querySelector<HTMLDivElement>('.page-mode')!
@@ -2169,10 +2173,10 @@ window.onload = function () {
     }
   }
   // Initialize the AI Analysis panel when the page loads
-  initAIAnalysisPanel();
+  initAIAnalysisPanel()
   
   // Initialize the comment panel when the page loads
-  initCommentHeader();
+  initCommentHeader()
   
   // 8. 内部事件监听
   instance.listener.rangeStyleChange = function (payload) {
